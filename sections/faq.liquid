@@ -1,0 +1,59 @@
+{%  if section.settings.header !="" %}
+<p>{{ section.settings.header }}</p>
+  {% endif %}
+  
+{% if section.settings.my_image %}
+  <img src="{{ section.settings.my_image | img_url }}" alt="Uploaded Image" class="faq-image">
+{% endif %}
+
+{% schema %}
+{
+  "name": "faq",
+  "tag": "section",
+  "class": "premium_faq",
+  "settings": [
+    {
+      "type": "text",
+      "id": "header",
+      "label": "My Label"
+    },
+     {
+      "type": "image_picker",
+      "id": "my_image",
+      "label": "Upload Image"
+    },
+    {
+      "type": "product",
+      "id": "my_product",
+      "label":"select product"
+    }
+  ],
+  "presets": [
+    {
+      "name": "faq"
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+.premium_faq {
+ 
+}
+
+.premium_faq p {
+    text-align: center;
+  font-size: 40px;
+}
+
+
+.premium_faq img {
+  /* Styles for the uploaded image */
+}
+
+/* Additional styles as needed */
+
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

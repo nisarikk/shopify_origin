@@ -1,0 +1,45 @@
+{% schema %}
+  {
+    "name": "Homepage Video",
+    "class": "index-section index-section--flush",
+    "settings": [
+      {
+        
+          "type": "video",
+          "id": "video",
+          "label": "Custom video"
+      
+      }
+    ],
+    "presets": [{
+    "name": "Homepage Videos",
+    "category": "Text"
+    }]
+  }
+{% endschema %}
+
+
+{% stylesheet %}
+  
+  .section-homepage-video{
+    
+    max-width: 600px; 
+    margin: 0 auto; 
+    margin left: 100px;
+  }
+  
+  .video-homepage{
+      width: 600px;
+      height: auto;
+      
+  }
+  
+{% endstylesheet %}
+
+
+
+<div class="section-homepage-video">
+    <video autoplay muted loop playsinline class="video-homepage">
+         <source src="{{ section.settings.video | video_tag }}" />
+    </video>
+</div>

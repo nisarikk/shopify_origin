@@ -1,0 +1,28 @@
+{% schema %}
+  {
+    "name": "valid-postcodes",
+     "presets": [
+      {
+        "name": "Valid Postcodes",
+        "category": "Custom"
+      }
+     ],
+    "settings": [
+      {
+        "type": "text",
+        "id": "welcome_message",
+        "label": "Welcome Message",
+        "default": "Currently we are delivering to the postcodes 2060, 4020 and 3070 only"
+      }
+    ]
+  }
+{% endschema %}
+
+<p id="welcome-message" style="display: none;">{{ section.settings.welcome_message }}</p>
+
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

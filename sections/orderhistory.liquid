@@ -1,0 +1,228 @@
+{% schema %}
+{
+  "name": "Order History",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Order History",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
+
+
+<div class="filters">
+ 
+<label for="dateSort">Sort by Date: </label>
+<select id="dateSort">
+    <option value="asc">Ascending</option>
+    <option value="desc">Descending</option>
+</select>
+  
+    <label for="priceSort">Sort by Price: </label>
+    <select id="priceSort">
+        <option value="asc">Ascending</option>
+        <option value="desc">Descending</option>
+    </select>
+
+
+
+
+
+  <label for="fulfillmentStatus">Filter by Fulfillment Status: </label>
+<select id="fulfillmentStatus">
+    <option value="all">All</option>
+    <option value="fulfilled">Fulfilled</option>
+    <option value="unfulfilled">Unfulfilled</option>
+    <!-- Add more options based on your available statuses -->
+</select>
+
+
+
+  
+</div>
+
+
+<div class="order-history-main-div"> 
+
+      
+        {%- if customer.orders.size > 0 -%}
+          <table role="table" class="order-history">
+            <caption class="visually-hidden">
+              {{ 'customer.orders.title' | t }}
+            </caption>
+            <thead role="rowgroup">
+              <tr role="row">
+                <th id="ColumnOrder" scope="col" role="columnheader">{{ 'customer.orders.order_number' | t }}</th>
+                <th id="ColumnImage" scope="col" role="columnheader">{{ 'customer.orders.product_image' | t }}</th>
+                          <th id="ColumnProducts" scope="col" role="columnheader">{{ 'customer.orders.products' | t }}</th>
+
+                <th id="ColumnDate" scope="col" role="columnheader">{{ 'customer.orders.date' | t }}</th>
+                <th id="ColumnPayment" scope="col" role="columnheader">{{ 'customer.orders.payment_status' | t }}</th>
+                <th id="ColumnFulfillment" scope="col" role="columnheader">
+                  {{ 'customer.orders.fulfillment_status' | t }}
+                </th>
+                <th id="ColumnTotal" scope="col" role="columnheader">{{ 'customer.orders.total' | t }}</th>
+              </tr>
+            </thead>
+            <tbody role="rowgroup">
+              {%- for order in customer.orders -%}
+                <tr role="row">
+                  <td
+                    id="RowOrder"
+                    role="cell"
+                    headers="ColumnOrder"
+                    data-label="{{ 'customer.orders.order_number' | t }}"
+                  >
+                    <a
+                      href="{{ order.customer_url }}"
+                      aria-label="{{ 'customer.orders.order_number_link' | t: number: order.name }}"
+                    >
+                      {{ order.name }}
+                    </a>
+                  </td>
+
+
+                  
+                   <td headers="RowOrder ColumnImage" role="cell" data-label="{{ 'customer.orders.product_image' | t }}">
+                      {%- for item in order.line_items -%}
+                        <img src="{{ item | img_url: 'medium' }}" alt="{{ item.title }}" />
+                      {%- endfor -%}
+                   </td>
+
+
+
+                <td headers="RowOrder ColumnProducts" role="cell" data-label="{{ 'customer.orders.products' | t }}">
+                  {%- for item in order.line_items -%}
+                    {{ item.title }}
+                    {%- unless forloop.last -%}, {% endunless -%}
+                  {%- endfor -%}
+                </td>
+
+                  
+                  <td headers="RowOrder ColumnDate" role="cell" data-label="{{ 'customer.orders.date' | t }}" data-date="{{ order.created_at }}">
+                    {{ order.created_at | time_tag: format: 'date' }}
+                  </td>
+                  <td
+                    headers="RowOrder ColumnPayment"
+                    role="cell"
+                    data-label="{{ 'customer.orders.payment_status' | t }}"
+                  >
+                    {{ order.financial_status_label }}
+                  </td>
+
+                  
+                  <td
+    headers="RowOrder ColumnFulfillment"
+    role="cell"
+    data-label="{{ 'customer.orders.fulfillment_status' | t }}"
+    data-fulfillment="{{ order.fulfillment_status_label | downcase }}"
+>
+    {{ order.fulfillment_status_label }}
+</td>
+
+                  
+                 <td headers="RowOrder ColumnTotal" role="cell" data-label="{{ 'customer.orders.total' | t }}" data-price="{{ order.total_net_amount | remove: ',' }}">
+   {{ order.total_net_amount | money_with_currency }}
+</td>
+
+                </tr>
+              {%- endfor -%}
+            </tbody>
+          </table>
+        {%- else -%}
+          <p>{{ 'customer.orders.none' | t }}</p>
+        {%- endif -%}
+    </div>
+
+
+
+                          
+
+{% stylesheet %}
+  
+  .main-page-title{
+    padding-top: 80px;
+    text-align:center;
+    font-size: 40px;
+  }
+  .order-history-main-div{
+    padding-top: 40px;
+    padding-bottom: 76px;
+  }
+  td img {
+    max-width: 80px; /* Adjust as needed */
+    height: auto;
+    margin: 5px; /* Optional: add some space between images */
+  }
+  table, td{
+    border: 1px solid white;
+  }
+  table{
+    width:100%
+  }
+  th{
+    background-color: white;
+  }
+
+{% endstylesheet %}
+
+{% javascript %}
+$(document).ready(function () {
+
+    $('#priceSort').change(function () {
+        var order = $(this).val();
+        var rows = $('.order-history tbody tr').toArray();
+
+        rows.sort(function (a, b) {
+            var priceA = parseFloat($(a).find('td[data-price]').data('price'));
+            var priceB = parseFloat($(b).find('td[data-price]').data('price'));
+
+            if (order === 'asc') {
+                return priceA - priceB;
+            } else {
+                return priceB - priceA;
+            }
+        });
+
+        $('.order-history tbody').html(rows);
+    });
+
+
+
+  $('#dateSort').change(function () {
+        var order = $(this).val();
+        var rows = $('.order-history tbody tr').toArray();
+
+        rows.sort(function (a, b) {
+            var dateA = new Date($(a).find('td[data-date]').data('date'));
+            var dateB = new Date($(b).find('td[data-date]').data('date'));
+
+            if (order === 'asc') {
+                return dateA - dateB;
+            } else {
+                return dateB - dateA;
+            }
+        });
+
+        $('.order-history tbody').html(rows);
+    });
+
+
+$('#fulfillmentStatus').change(function () {
+        var status = $(this).val();
+        $('.order-history tbody tr').each(function () {
+            var rowStatus = $(this).find('td[data-fulfillment]').text().trim().toLowerCase();
+
+            if (status === 'all' || rowStatus === status) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
+  
+});
+{% endjavascript %}
+

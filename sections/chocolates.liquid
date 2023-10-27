@@ -1,0 +1,103 @@
+<section class="image-text-section">
+  <h3>{{ section.settings.heading }}</h3>
+  <p>{{ section.settings.description }}</p>
+  <div class="image-text-blocks">
+    {% for block in section.blocks %}
+      <div class="image-text-block">
+        <div class="image-container">
+          <img src="{{ block.settings.image | img_url: 'master' }}" alt="{{ block.settings.alt_text }}" />
+          <div class="overlay-text">
+            <p>{{ block.settings.text }}</p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Image Text Section",
+  "settings": [
+    {
+      "type": "text",
+      "label": "Heading for the section",
+      "id": "heading"
+    },
+    {
+      "type": "textarea",
+      "label": "Description",
+      "id": "description"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image Block",
+      "settings": [
+        {
+          "type": "image_picker",
+          "label": "Image",
+          "id": "image"
+        },
+        {
+          "type": "text",
+          "label": "Alt Text",
+          "id": "alt_text",
+          "default": "Image Alt Text"
+        },
+        {
+          "type": "textarea",
+          "label": "Text",
+          "id": "text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image Text Section",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
+
+
+{% stylesheet %}
+.image-text-section {
+  /* Add your CSS styles for the section here */
+}
+
+.image-text-blocks {
+  /* Add your CSS styles for the blocks here */
+}
+
+.image-text-block {
+  /* Add your CSS styles for each block here */
+}
+
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.overlay-text {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Adjust the background color and opacity as needed */
+  color: #fff; /* Text color */
+  padding: 10px; /* Adjust padding as needed */
+}
+
+.overlay-text p {
+  margin: 0;
+}
+
+/* Customize styles as needed */
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

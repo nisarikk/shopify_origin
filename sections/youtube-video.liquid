@@ -1,0 +1,37 @@
+{% schema %}
+{
+  "name": "YouTube Video",
+  "settings": [
+    {
+      "type": "text",
+      "label": "YouTube Video Link",
+      "id": "youtube_link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "YouTube Video",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
+
+
+
+
+<div class="youtube-video">
+  <div class="video-container">
+    {% if section.settings.youtube_link %}
+      <iframe
+        width="560"
+        height="315"
+        src="{{ section.settings.youtube_link | replace: 'watch?v=', 'embed/' }}"
+        frameborder="0"
+        allowfullscreen
+      ></iframe>
+    {% else %}
+      <p>No YouTube video link provided.</p>
+    {% endif %}
+  </div>
+</div>
